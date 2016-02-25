@@ -11,7 +11,7 @@ var svcName = 'AeLookupSvc';
 var options = { exe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
-nssm.get(function(error, result) {
+nssm.get('Start', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;

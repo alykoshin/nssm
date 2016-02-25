@@ -7,7 +7,7 @@
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
-var svcName = 'AeLookupSvc';
+var svcName = 'test';
 var options = { exe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 

@@ -52,6 +52,8 @@ nssm.set('Start', 'manual', function(error, result) {
 
 ### restart
 
+Please, set the proper name of the service.
+
 ```
 //var Nssm = require('nssm');
 var Nssm = require('../');
@@ -70,6 +72,8 @@ nssm.restart(function(error, result) {
 ```
 
 ### get 
+
+Please, set the proper name of the service.
 
 ```
 //var Nssm = require('nssm');
@@ -90,17 +94,17 @@ nssm.get('Start', function(error, result) {
 
 ### set 
 
-```
-'use strict';
+Please, set the proper name of the service.
 
+```
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
-var svcName = 'awl-client';
+var svcName = 'test';
 var options = { exe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
-nssm.set('start', 'manual', function(error, result) {
+nssm.set('Start', 'manual', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
