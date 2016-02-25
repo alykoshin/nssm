@@ -50,12 +50,14 @@ nssm.set('Start', 'manual', function(error, result) {
 
 ## Examples
 
+### restart
+
 ```
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = {};
+var options = { exe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.restart(function(error, result) {
@@ -67,23 +69,46 @@ nssm.restart(function(error, result) {
 });
 ```
 
+### get 
+
 ```
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = {};
+var options = { exe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
-nssm.restart(function(error, result) {
+nssm.get('Start', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
   }
   console.log('*** stdout: \'' + result + '\'');
 });
+```
+
+### set 
 
 ```
+'use strict';
+
+//var Nssm = require('nssm');
+var Nssm = require('../');
+
+var svcName = 'awl-client';
+var options = { exe: 'nssm.exe' }; // default
+var nssm = Nssm(svcName, options);
+
+nssm.set('start', 'manual', function(error, result) {
+  if (error) {
+    console.log('*** error:', error, ' stderr:', result);
+    return;
+  }
+  console.log('*** stdout: \'' + result + '\'');
+});
+```
+
 ## Options object
 
 `options.exe` - String - pathname of `nssm.exe`, default: `nssm.exe`
