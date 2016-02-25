@@ -30,12 +30,12 @@ function version() {
 
 if (argv.h || argv.help) {
   help();
-  return;
+  process.exit(0);
 }
 
 if (argv.v || argv.version) {
   version();
-  return;
+  process.exit(0);
 }
 
 
