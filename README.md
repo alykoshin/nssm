@@ -24,6 +24,122 @@ npm install --save nssm
 
 ## Usage
 
+Require the module:
+
+```
+var Nssm = require('nssm');
+```
+
+Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `exe` - path to `nssm.exe`):
+
+```
+var nssm = Nssm('AeLookupSvc, { exe: 'nssm.exe' });
+```
+
+Execute command by calling appropriate method, passing arguments and callback function, for example, to set startup type: 
+
+```
+nssm.set('Start', 'manual', function(error, result) {
+  if (error) {
+    console.log('*** error:', error, ' stderr:', result);
+    return;
+  }
+  console.log('*** stdout: \'' + result + '\'');
+});
+```
+
+## Examples
+
+```
+//var Nssm = require('nssm');
+var Nssm = require('../');
+
+var svcName = 'AeLookupSvc';
+var options = {};
+var nssm = Nssm(svcName, options);
+
+nssm.restart(function(error, result) {
+  if (error) {
+    console.log('*** error:', error, ' stderr:', result);
+    return;
+  }
+  console.log('*** stdout: \'' + result + '\'');
+});
+```
+
+```
+//var Nssm = require('nssm');
+var Nssm = require('../');
+
+var svcName = 'AeLookupSvc';
+var options = {};
+var nssm = Nssm(svcName, options);
+
+nssm.restart(function(error, result) {
+  if (error) {
+    console.log('*** error:', error, ' stderr:', result);
+    return;
+  }
+  console.log('*** stdout: \'' + result + '\'');
+});
+
+```
+## Options object
+
+`options.exe` - String - pathname of `nssm.exe`, default: `nssm.exe`
+
+
+## Available commands: 
+    'install',
+    'remove',
+    'start',
+    'stop',
+    'restart',
+    'status',
+    'pause',
+    'continue',
+    'rotate',
+    'get',
+    'set',
+    'reset',
+
+Please, refer to `nssm` manual for the info on usage: https://nssm.cc/commands. 
+
+## Aliases
+
+You may also use following aliases when setting parameters values with `set` method.
+
+
+parameter: `Start`
+
+| alias       | value                       |
+|-------------|-----------------------------|
+| auto        | SERVICE_AUTO_START          |
+| delayed     | SERVICE_DELAYED_START       |
+| demand      | SERVICE_DEMAND_START        |
+| manual      | SERVICE_DEMAND_START        |
+| disabled    | SERVICE_DISABLED            |
+
+parameter: `Type`
+
+| alias       | value                       |
+|-------------|-----------------------------|
+| standalone  | SERVICE_WIN32_OWN_PROCESS   |
+| interactive | SERVICE_INTERACTIVE_PROCESS | 
+
+parameter: `AppPriority`: 
+
+| alias       | value                       |
+|-------------|-----------------------------|
+| realtime    | REALTIME_PRIORITY_CLASS     |
+| high        | HIGH_PRIORITY_CLASS         |
+| above       | ABOVE_NORMAL_PRIORITY_CLASS |
+| normal      | NORMAL_PRIORITY_CLASS       |
+| below       | BELOW_NORMAL_PRIORITY_CLASS |
+| idle        | IDLE_PRIORITY_CLASS         |
+
+
+
 
 ## Credits
 [Alexander](https://github.com/alykoshin/)

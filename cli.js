@@ -49,12 +49,12 @@ var onExec = function (err, result) {
 
 var args = process.argv.slice(2);
 
-var name = args[1];
-var cmd = args[0];
+var svcName = args[1];
+var command = args[0];
 
 args = args.slice(2);
 args.push(onExec);
 
-var nssm = new Nssm(name);
-if (!nssm[cmd]) { throw 'Invalid command'; }
-nssm[cmd].apply(nssm, args);
+var nssm = new Nssm(svcName);
+if (!nssm[command]) { throw 'Invalid command'; }
+nssm[command].apply(nssm, args);
