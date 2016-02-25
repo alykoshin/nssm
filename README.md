@@ -10,7 +10,7 @@
 
 # nssm
 
-Wrapper for nssm.exe to manage windows services
+Wrapper for `nssm.exe` to manage windows services
 
 
 If you have different needs regarding the functionality, please add a [feature request](https://github.com/alykoshin/nssm/issues).
@@ -30,10 +30,10 @@ Require the module:
 var Nssm = require('nssm');
 ```
 
-Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `exe` - path to `nssm.exe`):
+Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `nssmExe` - path to `nssm.exe`):
 
 ```
-var nssm = Nssm('AeLookupSvc, { exe: 'nssm.exe' });
+var nssm = Nssm('AeLookupSvc', { nssmExe: 'nssm.exe' });
 ```
 
 Execute command by calling appropriate method, passing arguments and callback function, for example, to set startup type: 
@@ -59,7 +59,7 @@ Please, set the proper name of the service.
 var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = { exe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.restart(function(error, result) {
@@ -80,7 +80,7 @@ Please, set the proper name of the service.
 var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = { exe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.get('Start', function(error, result) {
@@ -101,7 +101,7 @@ Please, set the proper name of the service.
 var Nssm = require('../');
 
 var svcName = 'test';
-var options = { exe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.set('Start', 'manual', function(error, result) {
@@ -115,7 +115,7 @@ nssm.set('Start', 'manual', function(error, result) {
 
 ## Options object
 
-`options.exe` - String - pathname of `nssm.exe`, default: `nssm.exe`
+`options.nssmExe` - String - pathname of `nssm.exe`, default: `nssm.exe`
 
 
 ## Available commands: 
