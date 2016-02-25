@@ -1,6 +1,6 @@
 {
   "name": "nssm",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Wrapper for nssm.exe to manage windows services",
   "main": "./index.js",
   "engines": {
@@ -32,7 +32,7 @@
     "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
-      "nssm.exe,nssm,windows,service,services,manager,install,remove,start,restart,stop,status"
+    "nssm.exe,nssm,windows,service,services,manager,install,remove,start,restart,stop,status"
   ],
   "author": "Alexander <alykoshin@gmail.com>",
   "license": "MIT",
