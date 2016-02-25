@@ -3,7 +3,7 @@
 
 var argv = require('minimist')(process.argv.slice(2));
 var pkg = require('./package.json');
-var nssm = require('./');
+var Nssm = require('./');
 
 
 function help() {
@@ -39,8 +39,22 @@ if (argv.v || argv.version) {
 }
 
 
-var main = require('./');
+var onExec = function (err, result) {
+  if (err) {
+    console.log('*** err:', err, ' stderr:', result);
+    return;
+  }
+  console.log('*** stdout: \'' + result + '\'');
+};
 
-main.exec(argv[0], function() {
+var args = process.argv.slice(2);
 
-});
+var name = args[1];
+var cmd = args[0];
+
+args = args.slice(2);
+args.push(onExec);
+
+var nssm = new Nssm(name);
+if (!nssm[cmd]) { throw 'Invalid command'; }
+nssm[cmd].apply(nssm, args);
