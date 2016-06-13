@@ -15,9 +15,9 @@
     "lint": "eslint -f unix .",
     "inspect": "jsinspect",
     "pretest": "npm run lint && npm run inspect && npm run nsp && npm run _deps-check",
-    "__test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*",
+    "_test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*",
     "test": "npm run _test",
-    "_test": "echo \"Warning: no test specified\" && exit 0",
+    "__test": "echo \"Warning: no test specified\" && exit 0",
     "___test": "echo \"Error: no test specified\" && exit 1",
     "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*",
     "_commit": "git commit -am \"commit by 'npm run commit'\"",
@@ -32,7 +32,7 @@
     "coverall": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
-    "nssm.exe,nssm,windows,service,services,manager,install,remove,start,restart,stop,status"
+    "nssm.exe,nssm,windows,service,services,manager,install,remove,start,restart,stop,status,svc,winsvc"
   ],
   "author": "Alexander <alykoshin@gmail.com>",
   "license": "MIT",
@@ -48,15 +48,15 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "chai": "^3.4.1",
+    "chai": "^3.5.0",
     "chai-things": "^0.2.0",
-    "coveralls": "^2.11.4",
-    "eslint": "^2.2.0",
-    "istanbul": "^0.4.1",
-    "jshint": "^2.8.0",
+    "coveralls": "^2.11.9",
+    "eslint": "^2.12.0",
+    "istanbul": "^0.4.3",
+    "jshint": "^2.9.2",
     "jsinspect": "^0.8.0",
-    "mocha": "^2.3.4",
-    "mockery": "^1.4.0",
-    "sinon": "^1.17.2"
+    "mocha": "^2.5.3",
+    "mockery": "^1.7.0",
+    "sinon": "^1.17.4"
   }
 }

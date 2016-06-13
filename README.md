@@ -10,7 +10,7 @@
 
 # nssm
 
-Wrapper for `nssm.exe` to manage windows services
+Wrapper for `nssm.exe` to manage Windows services
 
 
 If you have different needs regarding the functionality, please add a [feature request](https://github.com/alykoshin/nssm/issues).
