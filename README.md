@@ -26,19 +26,19 @@ npm install --save nssm
 
 Require the module:
 
-```
+```js
 var Nssm = require('nssm');
 ```
 
 Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `nssmExe` - path to `nssm.exe`):
 
-```
+```js
 var nssm = Nssm('AeLookupSvc', { nssmExe: 'nssm.exe' });
 ```
 
 Execute command by calling appropriate method, passing arguments and callback function, for example, to set startup type: 
 
-```
+```js
 nssm.set('Start', 'manual', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
@@ -54,7 +54,7 @@ nssm.set('Start', 'manual', function(error, result) {
 
 Please, set the proper name of the service.
 
-```
+```js
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
@@ -75,7 +75,7 @@ nssm.restart(function(error, result) {
 
 Please, set the proper name of the service.
 
-```
+```js
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
@@ -96,7 +96,7 @@ nssm.get('Start', function(error, result) {
 
 Please, set the proper name of the service.
 
-```
+```js
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
