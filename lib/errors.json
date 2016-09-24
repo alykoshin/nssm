@@ -1,0 +1,4 @@
+{
+  "emptyName": "Service name must be provided",
+  "notFound": "nssm.exe executable not found"
+}

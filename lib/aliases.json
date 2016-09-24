@@ -1,0 +1,21 @@
+{
+  "start": {
+    "auto":     "SERVICE_AUTO_START",
+    "delayed":  "SERVICE_DELAYED_START",
+    "demand":   "SERVICE_DEMAND_START",
+    "manual":   "SERVICE_DEMAND_START",
+    "disabled": "SERVICE_DISABLED"
+  },
+  "type": {
+    "standalone": "SERVICE_WIN32_OWN_PROCESS",
+    "interactive": "SERVICE_INTERACTIVE_PROCESS"
+  },
+  "apppriority": {
+    "realtime": "REALTIME_PRIORITY_CLASS",
+    "high": "HIGH_PRIORITY_CLASS",
+    "above": "ABOVE_NORMAL_PRIORITY_CLASS",
+    "normal": "NORMAL_PRIORITY_CLASS",
+    "below": "BELOW_NORMAL_PRIORITY_CLASS",
+    "idle": "IDLE_PRIORITY_CLASS"
+  }
+}

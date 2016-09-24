@@ -11,20 +11,21 @@ var mockery = require('mockery');
 // chai.use(require('chai-things')); //http://chaijs.com/plugins/chai-things
 
 
-var commands = [
-  'install',
-  'remove',
-  'start',
-  'stop',
-  'restart',
-  'status',
-  'pause',
-  'continue',
-  'rotate',
-  'get',
-  'set',
-  'reset'
-];
+// var commands = [
+//   'install',
+//   'remove',
+//   'start',
+//   'stop',
+//   'restart',
+//   'status',
+//   'pause',
+//   'continue',
+//   'rotate',
+//   'get',
+//   'set',
+//   'reset'
+// ];
+var commands = require('../lib/commands.json');
 
 var protectedMethods = [
   '_exec',
@@ -52,6 +53,13 @@ describe('# nssm', function () {
       var allMethods = commands.concat(protectedMethods);
       expect(nssm).to.have.all.keys( allMethods );
     });
+
+    it('# throws if name not provided', function () {
+      expect(function() {
+        nssmModuleExports('', {});
+      }).to.throw();
+    });
+
   });
 
   describe('# methods with mock', function () {
@@ -66,7 +74,7 @@ describe('# nssm', function () {
       });
 
       child_process = {
-        execFile: sinon.stub()
+        execFile: sinon.stub() // overrided later
       };
 
       // replace the module `request` with a stub object
@@ -81,38 +89,211 @@ describe('# nssm', function () {
     });
 
     it('# creates a mocked object', function () {
+      // child_process.execFile = sinon.stub();
       expect(nssm).to.be.an('object');
     });
 
-    it('# able to call nssm.get() passing all parameters', function (done) {
 
-      var defaultNssmExe = 'nssm.exe';
-      var commandName = 'get';
-      var commandParams = ['Start'];
+    describe('# nssm.get()', function() {
 
-      child_process.execFile = function(name, args, options, fn) {
-        expect(name).to.equal(defaultNssmExe);
+      function setMockFn(defaultNssmExe, commandName, commandParams, output) {
+        child_process.execFile = function(name, args, options, fn) {
+          expect(name).to.equal(defaultNssmExe);
 
-        var nssmArgs = commandParams.slice();
-        nssmArgs.unshift(serviceName);
-        nssmArgs.unshift(commandName);
-        expect(args).to.eql(nssmArgs);
+          var nssmArgs = commandParams.slice();
+          nssmArgs.unshift(serviceName);
+          nssmArgs.unshift(commandName);
+          expect(args).to.eql(nssmArgs);
 
+          // var error = null;
+          // var stdout = null;
+          // var stderr = null;
+
+          // var error = null;
+          // if (error || output.stderr) {
+          //   error = { code: error };
+          // }
+          fn(output.error, output.stdout, output.stderr);
+        };
+      }
+
+      // function setMockFnThrow(/* arguments */) {
+      //   child_process.execFile = function(/* arguments */) {
+      //     throw new Error('throw error inside child_process.execFile()');
+      //   };
+      // }
+
+
+      it('# callback on success', function (done) {
+
+        var defaultNssmExe = 'nssm.exe';
+        var commandName = 'get';
+        var commandParams = ['Start'];
         var error = null;
-        var stdout = null;
-        var stderr = null;
-        fn(error, stdout, stderr);
-      };
+        var stdout = 'test output';
+        var stderr = '';
 
-      var nssmCallback = function(error, result) {
-        expect(error).to.be.null;
-        done();
-      };
+        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
 
-      var fnParam = commandParams.slice();
-      fnParam.push(nssmCallback);
 
-      nssm[commandName].apply(this,fnParam);
+        var nssmCallback = function(err, res) {
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
+          done();
+        };
+
+        var fnParam = commandParams.slice();
+        fnParam.push(nssmCallback);
+
+        nssm[commandName].apply(this,fnParam);
+      });
+
+      it('# callback on non-empty error', function (done) {
+
+        var defaultNssmExe = 'nssm.exe';
+        var commandName = 'get';
+        var commandParams = ['Start'];
+        var error = { code: 'ERROR_CODE' };
+        var stdout = 'test output';
+        var stderr = '';
+
+        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+
+
+        var nssmCallback = function(err, res) {
+          expect(err).to.eql(error);
+          expect(res).to.equal(stderr);
+          done();
+        };
+
+        var fnParam = commandParams.slice();
+        fnParam.push(nssmCallback);
+
+        nssm[commandName].apply(this,fnParam);
+      });
+
+      it('# nssm.get() returns resolved Promise (callback not set)', function () {
+
+        var defaultNssmExe = 'nssm.exe';
+        var commandName = 'get';
+        var commandParams = ['Start'];
+        var error = null;
+        var stdout = 'test output';
+        var stderr = '';
+
+        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+
+        // var nssmCallback = function(error, result) {
+        //   expect(error).to.be.null;
+        //   done();
+        // };
+
+        var fnParam = commandParams.slice();
+        // fnParam.push(nssmCallback);
+
+        var promise = nssm[commandName].apply(this,fnParam);
+
+        expect(promise).to.be.a('Promise');
+
+        promise.then(function(stdout) {
+          expect(stdout).to.equal(stdout);
+        });
+
+      });
+
+      it('# nssm.get() returns resolved Promise and calls callback on success', function (done) {
+
+        var defaultNssmExe = 'nssm.exe';
+        var commandName = 'get';
+        var commandParams = ['Start'];
+        var error = null;
+        var stdout = 'test output';
+        var stderr = '';
+
+        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+
+        var nssmCallback = function(err, res) {
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
+          done();
+        };
+
+        var fnParam = commandParams.slice();
+        fnParam.push(nssmCallback);
+
+        var promise = nssm[commandName].apply(this,fnParam);
+
+        expect(promise).to.be.a('Promise');
+      });
+
+      // it('# nssm.get() survives throw inside child_process.execFile()', function (done) {
+      //
+      //   var defaultNssmExe = 'nssm.exe';
+      //   var commandName = 'get';
+      //   var commandParams = ['Start'];
+      //   var error = null;
+      //   var stdout = 'test output';
+      //   var stderr = '';
+      //
+      //   setMockFnThrow(/* arguments */);
+      //
+      //   var nssmCallback = function(err, res) {
+      //     expect(err).to.eql(error);
+      //     expect(res).to.equal(stdout);
+      //     done();
+      //   };
+      //
+      //   var fnParam = commandParams.slice();
+      //   fnParam.push(nssmCallback);
+      //
+      //   var promise = nssm[commandName].apply(this,fnParam);
+      //
+      //   expect(promise).to.be.a('Promise');
+      // });
+
+    });
+
+    describe('# nssm.set()', function() {
+
+      function setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, output) {
+        child_process.execFile = function(name, args, options, fn) {
+          expect(name).to.equal(defaultNssmExe);
+
+          var nssmArgs = commandParams.slice();
+          nssmArgs.unshift(serviceName);
+          nssmArgs.unshift(commandName);
+          console.log('args:', args, ', nssmArgs:', nssmArgs, ', expectedArgs:', expectedArgs);
+          expect(args).to.eql(expectedArgs);
+
+          fn(output.error, output.stdout, output.stderr);
+        };
+      }
+
+      it('# returns resolved Promise and calls callback on success', function (done) {
+
+        var defaultNssmExe = 'nssm.exe';
+        var commandName = 'set';
+        var commandParams = [ 'Start', 'Auto' ];
+        var error = null;
+        var stdout = 'test output';
+        var stderr = '';
+        var expectedArgs = [ 'set', 'serviceName', 'Start', 'SERVICE_AUTO_START' ];
+
+        setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, { error: error, stdout: stdout, stderr: stderr });
+
+        var nssmCallback = function(err, res) {
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
+          done();
+        };
+
+        var fnParam = commandParams.slice();
+        fnParam.push(nssmCallback);
+
+        var promise = nssm[commandName].apply(this,fnParam);
+
+        expect(promise).to.be.a('Promise');
+      });
     });
 
   });

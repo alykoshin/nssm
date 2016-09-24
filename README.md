@@ -10,7 +10,7 @@
 
 # nssm
 
-Wrapper for `nssm.exe` to manage Windows services
+Wrapper for `nssm.exe` to manage Windows services with `Promises` support
 
 
 If you have different needs regarding the functionality, please add a [feature request](https://github.com/alykoshin/nssm/issues).
@@ -47,6 +47,22 @@ nssm.set('Start', 'manual', function(error, result) {
   console.log('*** stdout: \'' + result + '\'');
 });
 ```
+
+Promises version: 
+
+```js
+nssm.set('Start', 'manual')
+  .then(function(stdout) { 
+    console.log('*** stdout: \'' + stdout + '\''); 
+  })
+  .catch(function(error, stderr) {
+     console.log('*** error:', error, ' stderr:', stderr); 
+   })
+  ;
+```
+
+You may use callback and Promises simultaneously if needed.
+
 
 ## Examples
 

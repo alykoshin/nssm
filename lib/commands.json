@@ -1,0 +1,14 @@
+[
+  "install",
+  "remove",
+  "start",
+  "stop",
+  "restart",
+  "status",
+  "pause",
+  "continue",
+  "rotate",
+  "get",
+  "set",
+  "reset"
+]
