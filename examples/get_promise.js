@@ -13,10 +13,13 @@ var nssm = Nssm(svcName, options);
 
 var propertyName = 'Start';
 
-nssm.get(propertyName, function(error, result) {
-  if (error) {
-    console.log('*** error:', error, ' stderr:', result);
-    return;
-  }
-  console.log('*** stdout: \'' + result + '\'');
-});
+nssm.get(propertyName)
+  .then(function(stdout) {
+    console.log('then(): stdout: \'' + stdout + '\'');
+  })
+  .catch(function(error) {
+    console.log('catch(): error:', error);
+  })
+  ;
+
+

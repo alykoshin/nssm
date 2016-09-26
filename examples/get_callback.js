@@ -7,18 +7,16 @@
 //var Nssm = require('nssm');
 var Nssm = require('../');
 
-var svcName = 'test';
-// var svcName = 'AeLookupSvc';
+var svcName = 'AeLookupSvc';
 var options = { nssmExe: 'nssm.exe' }; // default
 var nssm = Nssm(svcName, options);
 
 var propertyName = 'Start';
-var propertyValue = 'manual';
 
-nssm.set(propertyName, propertyValue, function(error, result) {
+nssm.get(propertyName, function(error, result) {
   if (error) {
-    console.log('*** error:', error, ' stderr:', result);
+    console.log('error:', error, ' stderr:', result);
     return;
   }
-  console.log('*** stdout: \'' + result + '\'');
+  console.log('stdout: \'' + result + '\'');
 });
