@@ -36,7 +36,8 @@ Instantiate the object providing service name and options object (so far `option
 var nssm = Nssm('AeLookupSvc', { nssmExe: 'nssm.exe' });
 ```
 
-Execute command by calling appropriate method, passing arguments and callback function, for example, to set startup type: 
+Execute command by calling appropriate method and passing arguments with callback function. 
+For example, to set startup type: 
 
 ```js
 nssm.set('Start', 'manual', function(error, result) {
@@ -47,21 +48,56 @@ nssm.set('Start', 'manual', function(error, result) {
   console.log('*** stdout: \'' + result + '\'');
 });
 ```
+You may find this example in `examples/set.js`.
 
-Promises version: 
+`Promises` version: 
 
 ```js
-nssm.set('Start', 'manual')
-  .then(function(stdout) { 
-    console.log('*** stdout: \'' + stdout + '\''); 
+var Nssm = require('nssm');
+//var Nssm = require('../');
+
+var svcName = 'AeLookupSvc';
+var options = { nssmExe: 'nssm.exe' }; // default
+var nssm = Nssm(svcName, options);
+
+var propertyName = 'Start';
+
+nssm.get(propertyName)
+  .then(function(stdout) {
+    console.log('then(): stdout: \'' + stdout + '\'');
   })
-  .catch(function(error, stderr) {
-     console.log('*** error:', error, ' stderr:', stderr); 
-   })
+  .catch(function(error) {
+    console.log('catch(): error:', error);
+  })
   ;
 ```
+You may find this example in `examples/get_promise.js`.
 
-You may use callback and Promises simultaneously if needed.
+
+With `Promises` calls may be chained:
+```js
+nssm.set('start', 'manual')
+  .then(function(stdout) {
+    return nssm.get('start')
+  })
+  .then(function(stdout) {
+    return nssm.start()
+  })
+  .then(function(stdout) {
+    return nssm.stop()
+  })
+  .then(function(stdout) {
+    console.log('DONE');
+  })
+  .catch(function(error) {
+    console.log('ERROR:', error);
+  })
+  ;
+```
+You may find this example in `examples/get_promise.js`.
+
+
+Also, you may use callback and `Promise` simultaneously if needed.
 
 
 ## Examples
@@ -71,8 +107,8 @@ You may use callback and Promises simultaneously if needed.
 Please, set the proper name of the service.
 
 ```js
-//var Nssm = require('nssm');
-var Nssm = require('../');
+var Nssm = require('nssm');
+//var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
 var options = { nssmExe: 'nssm.exe' }; // default
@@ -86,14 +122,16 @@ nssm.restart(function(error, result) {
   console.log('*** stdout: \'' + result + '\'');
 });
 ```
+You may find this example in `examples/restart.js`.
+
 
 ### get 
 
 Please, set the proper name of the service.
 
 ```js
-//var Nssm = require('nssm');
-var Nssm = require('../');
+var Nssm = require('nssm');
+//var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
 var options = { nssmExe: 'nssm.exe' }; // default
@@ -107,14 +145,15 @@ nssm.get('Start', function(error, result) {
   console.log('*** stdout: \'' + result + '\'');
 });
 ```
+You may find this example in `examples/get_callback.js` and `examples/get_promises.js`.
 
 ### set 
 
 Please, set the proper name of the service.
 
 ```js
-//var Nssm = require('nssm');
-var Nssm = require('../');
+var Nssm = require('nssm');
+//var Nssm = require('../');
 
 var svcName = 'test';
 var options = { nssmExe: 'nssm.exe' }; // default
@@ -128,6 +167,8 @@ nssm.set('Start', 'manual', function(error, result) {
   console.log('*** stdout: \'' + result + '\'');
 });
 ```
+You may find this example in `examples/set.js`.
+
 
 ## Options object
 
