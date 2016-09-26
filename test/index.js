@@ -7,29 +7,17 @@ var assert = chai.assert;
 var expect = chai.expect;
 var sinon = require('sinon');
 var mockery = require('mockery');
-// chai.should();
-// chai.use(require('chai-things')); //http://chaijs.com/plugins/chai-things
 
-
-// var commands = [
-//   'install',
-//   'remove',
-//   'start',
-//   'stop',
-//   'restart',
-//   'status',
-//   'pause',
-//   'continue',
-//   'rotate',
-//   'get',
-//   'set',
-//   'reset'
-// ];
 var commands = require('../lib/commands.json');
 
 var protectedMethods = [
   '_exec',
 ];
+
+
+// We have an issue:
+// any exception (including assert/expect/etc) inside async functions silently stops the test execution
+
 
 describe('# nssm', function () {
 
@@ -97,7 +85,7 @@ describe('# nssm', function () {
     describe('# nssm.get()', function() {
 
       function setMockFn(defaultNssmExe, commandName, commandParams, output) {
-        child_process.execFile = function(name, args, options, fn) {
+        child_process.execFile = function(name, args, options, execFileCb) {
           expect(name).to.equal(defaultNssmExe);
 
           var nssmArgs = commandParams.slice();
@@ -113,7 +101,7 @@ describe('# nssm', function () {
           // if (error || output.stderr) {
           //   error = { code: error };
           // }
-          fn(output.error, output.stdout, output.stderr);
+          execFileCb(output.error, output.stdout, output.stderr);
         };
       }
 
@@ -256,16 +244,17 @@ describe('# nssm', function () {
     describe('# nssm.set()', function() {
 
       function setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, output) {
-        child_process.execFile = function(name, args, options, fn) {
+        child_process.execFile = function(name, args, options, execFileCb) {
           expect(name).to.equal(defaultNssmExe);
 
           var nssmArgs = commandParams.slice();
           nssmArgs.unshift(serviceName);
           nssmArgs.unshift(commandName);
           console.log('args:', args, ', nssmArgs:', nssmArgs, ', expectedArgs:', expectedArgs);
+
           expect(args).to.eql(expectedArgs);
 
-          fn(output.error, output.stdout, output.stderr);
+          execFileCb(output.error, output.stdout, output.stderr);
         };
       }
 
@@ -277,7 +266,7 @@ describe('# nssm', function () {
         var error = null;
         var stdout = 'test output';
         var stderr = '';
-        var expectedArgs = [ 'set', 'serviceName', 'Start', 'SERVICE_AUTO_START' ];
+        var expectedArgs = [ 'set', 'serviceName', 'Start', 'SERVICE_AUTO_START' ];  // auto -> SERVICE_AUTO_START
 
         setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, { error: error, stdout: stdout, stderr: stderr });
 
