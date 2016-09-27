@@ -15,6 +15,8 @@ Wrapper for `nssm.exe` to manage Windows services with `Promises` support
 
 If you have different needs regarding the functionality, please add a [feature request](https://github.com/alykoshin/nssm/issues).
 
+Supported node version: `"node": ">=0.12"`
+
 
 ## Installation
 
