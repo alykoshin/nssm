@@ -30,10 +30,6 @@ Require the module:
 
 ```js
 const Nssm = require('nssm')(options);
-```
-
-```js
-Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `nssmExe` - path to `nssm.exe`):
 
 let options = {
   nssmExe: 'nssm.exe', 
