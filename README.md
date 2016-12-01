@@ -36,6 +36,7 @@ let options = {
   promise:require('bluebird')
 }
 ```
+Instantiate the object providing service name 
 
 ```js
 var myService = Nssm('AeLookupSvc');
