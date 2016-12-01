@@ -29,20 +29,27 @@ npm install --save nssm
 Require the module:
 
 ```js
-var Nssm = require('nssm');
+const Nssm = require('nssm')(options);
 ```
 
+```js
 Instantiate the object providing service name and options object (so far `options` object may contains only one parameter `nssmExe` - path to `nssm.exe`):
 
+let options = {
+  nssmExe: 'nssm.exe', 
+  promise:require('bluebird')
+}
+```
+
 ```js
-var nssm = Nssm('AeLookupSvc', { nssmExe: 'nssm.exe' });
+var myService = Nssm('AeLookupSvc');
 ```
 
 Execute command by calling appropriate method and passing arguments with callback function. 
 For example, to set startup type: 
 
 ```js
-nssm.set('Start', 'manual', function(error, result) {
+myService.set('Start', 'manual', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
@@ -55,16 +62,15 @@ You may find this example in `examples/set.js`.
 `Promises` version: 
 
 ```js
-var Nssm = require('nssm');
-//var Nssm = require('../');
+const Nssm = require('nssm')({
+  nssmExe: 'nssm.exe', 
+  promise:require('bluebird')
+})
 
-var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+let myService = Nssm('AeLookupSvc');
+let propertyName = 'Start';
 
-var propertyName = 'Start';
-
-nssm.get(propertyName)
+myService.get(propertyName)
   .then(function(stdout) {
     console.log('then(): stdout: \'' + stdout + '\'');
   })
@@ -78,15 +84,15 @@ You may find this example in `examples/get_promise.js`.
 
 With `Promises` calls may be chained:
 ```js
-nssm.set('start', 'manual')
+myService.set('start', 'manual')
   .then(function(stdout) {
-    return nssm.get('start')
+    return myService.get('start')
   })
   .then(function(stdout) {
-    return nssm.start()
+    return myService.start()
   })
   .then(function(stdout) {
-    return nssm.stop()
+    return myService.stop()
   })
   .then(function(stdout) {
     console.log('DONE');
@@ -110,13 +116,15 @@ Please, set the proper name of the service.
 
 ```js
 var Nssm = require('nssm');
-//var Nssm = require('../');
+const Nssm = require('nssm')({
+  nssmExe: 'nssm.exe', 
+  promise:require('bluebird')
+})
 
-var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+let myService = Nssm('AeLookupSvc');
+let propertyName = 'Start';
 
-nssm.restart(function(error, result) {
+myService.restart(function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
@@ -132,14 +140,15 @@ You may find this example in `examples/restart.js`.
 Please, set the proper name of the service.
 
 ```js
-var Nssm = require('nssm');
-//var Nssm = require('../');
+const Nssm = require('nssm')({
+  nssmExe: 'nssm.exe', 
+  promise:require('bluebird')
+})
 
-var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+let myService = Nssm('AeLookupSvc');
+let propertyName = 'Start';
 
-nssm.get('Start', function(error, result) {
+myService.get('Start', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
@@ -154,14 +163,16 @@ You may find this example in `examples/get_callback.js` and `examples/get_promis
 Please, set the proper name of the service.
 
 ```js
-var Nssm = require('nssm');
-//var Nssm = require('../');
+const Nssm = require('nssm')({
+  nssmExe: 'nssm.exe', 
+  promise:require('bluebird')
+})
 
-var svcName = 'test';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+let myService = Nssm('AeLookupSvc');
+let propertyName = 'Start';
 
-nssm.set('Start', 'manual', function(error, result) {
+
+myService.set('Start', 'manual', function(error, result) {
   if (error) {
     console.log('*** error:', error, ' stderr:', result);
     return;
