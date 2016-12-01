@@ -112,7 +112,6 @@ Also, you may use callback and `Promise` simultaneously if needed.
 Please, set the proper name of the service.
 
 ```js
-var Nssm = require('nssm');
 const Nssm = require('nssm')({
   nssmExe: 'nssm.exe', 
   promise:require('bluebird')
@@ -167,7 +166,6 @@ const Nssm = require('nssm')({
 
 let myService = Nssm('AeLookupSvc');
 let propertyName = 'Start';
-
 
 myService.set('Start', 'manual', function(error, result) {
   if (error) {
