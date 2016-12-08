@@ -50,13 +50,13 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-things": "^0.2.0",
-    "coveralls": "^2.11.14",
-    "eslint": "^3.6.0",
+    "coveralls": "^2.11.15",
+    "eslint": "^3.11.1",
     "istanbul": "^0.4.5",
-    "jshint": "^2.9.3",
+    "jshint": "^2.9.4",
     "jsinspect": "^0.8.0",
-    "mocha": "^3.0.2",
-    "mockery": "^1.7.0",
+    "mocha": "^3.2.0",
+    "mockery": "^2.0.0",
     "sinon": "^1.17.6"
   }
 }
