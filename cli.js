@@ -4,10 +4,10 @@
 var argv = require('minimist')(process.argv.slice(2));
 var pkg = require('./package.json');
 var Nssm = require('./');
-
+var Log = console;
 
 function help() {
-  console.log([
+  Log.log([
     '',
     '  Package name: ' + pkg.name,
     '',
@@ -20,7 +20,7 @@ function help() {
 }
 
 function version() {
-  console.log([
+  Log.log([
     '* version info:',
     '* package.json version: ' + pkg.version,
     '* process.version: ' + process.version,
@@ -30,21 +30,22 @@ function version() {
 
 if (argv.h || argv.help) {
   help();
-  process.exit(0);
+  throw new Error();
 }
 
 if (argv.v || argv.version) {
   version();
-  process.exit(0);
+  throw new Error();
 }
 
 
-var onExec = function (err, result) {
+var onExec =  (err, result) => {
   if (err) {
-    console.log('*** err:', err, ' stderr:', result);
+    Log.log('*** err:', err, ' stderr:', result);
     return;
   }
-  console.log('*** stdout: \'' + result + '\'');
+
+  Log.log('*** stdout: \'' + result + '\'');
 };
 
 var args = process.argv.slice(2);
@@ -56,5 +57,9 @@ args = args.slice(2);
 args.push(onExec);
 
 var nssm = new Nssm(svcName);
-if (!nssm[command]) { throw 'Invalid command'; }
+
+if (!nssm[command]) {
+  throw new Error('Invalid command');
+}
+
 nssm[command].apply(nssm, args);

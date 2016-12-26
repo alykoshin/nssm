@@ -4,39 +4,40 @@
 
 'use strict';
 
-//var Nssm = require('nssm');
-var Nssm = require('../');
+const Nssm = require('../');
+const Log = console;
 
-var svcName = 'test';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+const svcName = 'AeLookupSvc';
+const nssmService = new Nssm(svcName); // default
+let propertyName = 'Start';
+let propertyValue = 'manual';
 
-var propertyName = 'Start';
-var propertyValue = 'manual';
+nssmService.set(propertyName, propertyValue)
+  .then((stdout) => {
+    Log.log('\n*** Parameter set ok');
+    Log.log('stdout: \'' + stdout + '\'');
 
-nssm.set('start', 'manual')
-  .then(function(stdout) {
-    console.log('\n*** Parameter set ok');
-    console.log('stdout: \'' + stdout + '\'');
-    return nssm.get('start')
+    return nssmService.get('start');
   })
-  .then(function(stdout) {
-    console.log('\n*** Parameter retrieved ok');
-    console.log('stdout: \'' + stdout + '\'');
-    return nssm.start()
+  .then((stdout) => {
+    Log.log('\n*** Parameter retrieved ok');
+    Log.log('stdout: \'' + stdout + '\'');
+
+    return nssmService.start();
   })
-  .then(function(stdout) {
-    console.log('\n*** Service started ok');
-    console.log('stdout: \'' + stdout + '\'');
-    return nssm.stop()
+  .then((stdout) => {
+    Log.log('\n*** Service started ok');
+    Log.log('stdout: \'' + stdout + '\'');
+
+    return nssmService.stop();
   })
-  .then(function(stdout) {
-    console.log('\n*** Service stopped ok');
-    console.log('stdout: \'' + stdout + '\'');
-    console.log('DONE');
+  .then((stdout) => {
+    Log.log('\n*** Service stopped ok');
+    Log.log('stdout: \'' + stdout + '\'');
+    Log.log('DONE');
   })
-  .catch(function(error) {
-    console.log('\n*** catch(): error:', error);
-    console.log('ERROR:', error);
+  .catch((error) => {
+    Log.log('\n*** catch(): error:', error);
+    Log.log('ERROR:', error);
   })
   ;

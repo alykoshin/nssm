@@ -3,9 +3,5 @@
   "ecmaFeatures": {
     "globalReturn": true
   },
-
-  "env": {
-    "es6": false
-  }
-
+	"extends": "eslint-config-airbnb-es5"
 }

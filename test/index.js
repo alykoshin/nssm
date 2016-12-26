@@ -1,50 +1,46 @@
-/* globals describe, before, beforeEach, after, afterEach, it */
-
 'use strict';
 
+/* globals describe, before, beforeEach, after, afterEach, it */
 const Sinon = require('sinon');
 const Chai = require('chai');
-const Mockery = require('Mockery');
-const Assert = Chai.assert;
-const Expect = Chai.expect;
-
+const Mockery = require('mockery');
 const Commands = require('../lib/commands.json');
+const Log = console;
 
-const protectedMethods = [
-  '_exec',
-];
+const expect = Chai.expect;
+
+const protectedMethods = ['_exec'];
 
 
 // We have an issue:
-// any exception (including Assert/Expect/etc) inside async functions silently stops the test execution
-
+// any exception (including expect/etc) inside async functions silently stops the test execution
 
 describe('# nssm', () => {
-
   describe('# initialization', () => {
-    let nssmModuleExports, nssm;
+    let nssmModuleExports;
+    let nssm;
 
     beforeEach('beforeEach', () => {
       nssmModuleExports = require('../');
     });
 
     it('# require() returns constructing function', () => {
-      Expect(nssmModuleExports).to.be.a('function');
+      expect(nssmModuleExports).to.be.a('function');
     });
 
     it('# creates an object', () => {
       nssm = nssmModuleExports('name', {});
-      Expect(nssm).to.be.an('object');
+      expect(nssm).to.be.an('object');
     });
 
-    it('# an object has all the Expected methods', () => {
+    it('# an object has all the expected methods', () => {
       let allMethods = Commands.concat(protectedMethods);
 
-      Expect(nssm).to.have.all.keys(allMethods);
+      expect(nssm).to.have.all.keys(allMethods);
     });
 
     it('# throws if name not provided', () => {
-      Expect(() => {
+      expect(() => {
         nssmModuleExports('', {});
       }).to.throw();
     });
@@ -52,7 +48,9 @@ describe('# nssm', () => {
 
   describe('# methods with mock', () => {
     let serviceName = 'serviceName';
-    let nssmModuleExports, nssm, child_process;
+    let nssmModuleExports;
+    let nssm;
+    let childProcess;
 
     before('before', () => {
       Mockery.enable({
@@ -61,12 +59,12 @@ describe('# nssm', () => {
         useCleanCache: true
       });
 
-      child_process = {
+      childProcess = {
         execFile: Sinon.stub() // overrided later
       };
 
       // replace the module `request` with a stub object
-      Mockery.registerMock('child_process', child_process);
+      Mockery.registerMock('childProcess', childProcess);
 
       nssmModuleExports = require('../');
       nssm = nssmModuleExports(serviceName, {});
@@ -77,21 +75,21 @@ describe('# nssm', () => {
     });
 
     it('# creates a mocked object', () => {
-      Expect(nssm).to.be.an('object');
+      expect(nssm).to.be.an('object');
     });
 
 
     describe('# nssm.get()', () => {
       function setMockFn(defaultNssmExe, commandName, commandParams, output) {
-        child_process.execFile = (name, args, options, execFileCb) => {
-          Expect(name).to.equal(defaultNssmExe);
+        childProcess.execFile = (name, args, options, execFileCb) => {
+          expect(name).to.equal(defaultNssmExe);
 
           let nssmArgs = commandParams.slice();
 
           nssmArgs.unshift(serviceName);
           nssmArgs.unshift(commandName);
 
-          Expect(args).to.eql(nssmArgs);
+          expect(args).to.eql(nssmArgs);
           execFileCb(output.error, output.stdout, output.stderr);
         };
       }
@@ -107,8 +105,8 @@ describe('# nssm', () => {
         setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
 
         let nssmCallback = (err, res) => {
-          Expect(err).to.eql(error);
-          Expect(res).to.equal(stdout);
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
           done();
         };
 
@@ -128,10 +126,9 @@ describe('# nssm', () => {
 
         setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
 
-
         let nssmCallback = (err, res) => {
-          Expect(err).to.eql(error);
-          Expect(res).to.equal(stderr);
+          expect(err).to.eql(error);
+          expect(res).to.equal(stderr);
           done();
         };
 
@@ -149,15 +146,15 @@ describe('# nssm', () => {
         let stdout = 'test output';
         let stderr = '';
 
-        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+        setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
         let fnParam = commandParams.slice();
         let promise = nssm[commandName].apply(this, fnParam);
 
-        Expect(promise).to.be.a('Promise');
+        expect(promise).to.be.a('Promise');
 
-        promise.then((stdout) => {
-          Expect(stdout).to.equal(stdout);
+        promise.then((output) => {
+          expect(output).to.equal(stdout);
         });
       });
 
@@ -169,11 +166,11 @@ describe('# nssm', () => {
         let stdout = 'test output';
         let stderr = '';
 
-        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+        setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
         let nssmCallback = (err, res) => {
-          Expect(err).to.eql(error);
-          Expect(res).to.equal(stdout);
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
           done();
         };
 
@@ -182,23 +179,23 @@ describe('# nssm', () => {
 
         let promise = nssm[commandName].apply(this, fnParam);
 
-        Expect(promise).to.be.a('Promise');
+        expect(promise).to.be.a('Promise');
       });
     });
 
     describe('# nssm.set()', () => {
-      function setMockFn(defaultNssmExe, commandName, commandParams, ExpectedArgs, output) {
-        child_process.execFile = (name, args, options, execFileCb) => {
-          Expect(name).to.equal(defaultNssmExe);
+      function setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, output) {
+        childProcess.execFile = (name, args, options, execFileCb) => {
+          expect(name).to.equal(defaultNssmExe);
 
           let nssmArgs = commandParams.slice();
 
           nssmArgs.unshift(serviceName);
           nssmArgs.unshift(commandName);
 
-          console.log('args:', args, ', nssmArgs:', nssmArgs, ', ExpectedArgs:', ExpectedArgs);
+          Log.log('args:', args, ', nssmArgs:', nssmArgs, ', expectedArgs:', expectedArgs);
 
-          Expect(args).to.eql(ExpectedArgs);
+          expect(args).to.eql(expectedArgs);
           execFileCb(output.error, output.stdout, output.stderr);
         };
       }
@@ -210,13 +207,13 @@ describe('# nssm', () => {
         let error = null;
         let stdout = 'test output';
         let stderr = '';
-        let ExpectedArgs = ['set', 'serviceName', 'Start', 'SERVICE_AUTO_START']; // auto -> SERVICE_AUTO_START
+        let expectedArgs = ['set', 'serviceName', 'Start', 'SERVICE_AUTO_START']; // auto -> SERVICE_AUTO_START
 
-        setMockFn(defaultNssmExe, commandName, commandParams, ExpectedArgs, { error: error, stdout: stdout, stderr: stderr });
+        setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, { error, stdout, stderr });
 
         let nssmCallback = (err, res) => {
-          Expect(err).to.eql(error);
-          Expect(res).to.equal(stdout);
+          expect(err).to.eql(error);
+          expect(res).to.equal(stdout);
           done();
         };
 
@@ -226,7 +223,7 @@ describe('# nssm', () => {
 
         let promise = nssm[commandName].apply(this, fnParam);
 
-        Expect(promise).to.be.a('Promise');
+        expect(promise).to.be.a('Promise');
       });
     });
   });

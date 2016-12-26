@@ -4,21 +4,22 @@
 
 'use strict';
 
-//var Nssm = require('nssm');
-var Nssm = require('../');
+const Path = require('path');
+const Nssm = require('../');
+const Log = console;
 
-var svcName = 'test';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+const svcName = 'AeLookupSvc';
+const nssmService = new Nssm(svcName); // default
 
-// var programName = '.\\node\\64\\node.exe';
-var programName = /*__dirname + '\\' +*/ 'node.exe';
-var scriptName = __dirname +  '\\' + 'testSvc\\testSvc.js'; // The path must be in Windows format
+// The path must be in Windows format
+let scriptName = Path.resolve(__dirname, 'testSvc', 'testSvc.js');
+let programName = /* __dirname + '\\' + */ 'node.exe';
 
-nssm.install(programName, scriptName, function(error, result) {
+nssmService.install(programName, scriptName, (error, result) => {
   if (error) {
-    console.log('*** error:', error, ' stderr:', result);
+    Log.log('*** error:', error, ' stderr:', result);
     return;
   }
-  console.log('*** stdout: \'' + result + '\'');
+
+  Log.log('*** stdout: \'' + result + '\'');
 });

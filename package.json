@@ -4,7 +4,7 @@
   "description": "Wrapper for nssm.exe to manage windows services",
   "main": "./index.js",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4.0.0"
   },
   "scripts": {
     "nsp": "nsp check",
@@ -49,15 +49,20 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "babel-eslint": "^7.1.1",
     "chai": "^3.5.0",
     "chai-things": "^0.2.0",
     "coveralls": "^2.11.14",
     "eslint": "^3.6.0",
+    "eslint-config-airbnb-es5": "^1.1.0",
+    "eslint-plugin-react": "^6.8.0",
     "istanbul": "^0.4.5",
     "jshint": "^2.9.3",
     "jsinspect": "^0.8.0",
     "mocha": "^3.0.2",
-    "mockery": "^1.7.0",
+    "mockery": "^2.0.0",
+    "npm-check-updates": "^2.8.9",
+    "nsp": "^2.6.2",
     "sinon": "^1.17.6"
   }
 }

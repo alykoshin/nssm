@@ -4,21 +4,19 @@
 
 'use strict';
 
-//var Nssm = require('nssm');
-var Nssm = require('../');
+const Nssm = require('../');
+const Log = console;
 
-var svcName = 'test';
-// var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
-var nssm = Nssm(svcName, options);
+const svcName = 'AeLookupSvc';
+const nssmService = new Nssm(svcName); // default
+let propertyName = 'Start';
+let propertyValue = 'manual';
 
-var propertyName = 'Start';
-var propertyValue = 'manual';
-
-nssm.set(propertyName, propertyValue, function(error, result) {
+nssmService.set(propertyName, propertyValue, (error, result) => {
   if (error) {
-    console.log('*** error:', error, ' stderr:', result);
+    Log.log('*** error:', error, ' stderr:', result);
     return;
   }
-  console.log('*** stdout: \'' + result + '\'');
+
+  Log.log('*** stdout: \'' + result + '\'');
 });

@@ -1,10 +1,11 @@
 /**
  * Created by alykoshin on 14.06.16.
  */
+'use strict';
 
-"use strict";
+const Log = console;
 
-var i = setInterval(function() {
+setInterval(() => {
   // do nothing
-  console.log('interval');
+  Log.log('interval');
 }, 500);
