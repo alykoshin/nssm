@@ -8,7 +8,6 @@ const Commands = require('../lib/commands.json');
 const Log = console;
 const expect = Chai.expect;
 
-const nssmExe = './';
 const protectedMethods = ['_exec'];
 
 // We have an issue:
@@ -28,7 +27,7 @@ describe('# service', () => {
     });
 
     it('# creates an object', () => {
-      service = new Nssm('name', { nssmExe: nssmExe });
+      service = new Nssm('name');
       expect(service).to.be.an('object');
     });
 
@@ -64,7 +63,7 @@ describe('# service', () => {
       Mockery.registerMock('childProcess', childProcess);
 
       Nssm = require('../');
-      service = new Nssm(serviceName, { nssmExe: nssmExe });
+      service = new Nssm(serviceName);
 
       Log.log(service);
     });
@@ -122,7 +121,7 @@ describe('# service', () => {
         let stdout = 'test output';
         let stderr = '';
 
-        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+        setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
         let serviceCallback = (err, res) => {
           expect(err).to.eql(error);
