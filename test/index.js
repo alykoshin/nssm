@@ -38,7 +38,7 @@ describe('# service', () => {
     });
 
     it('# throws if name not provided', () => {
-      expect(() => new Nssm('', { nssmExe: nssmExe })).to.throw();
+      expect(() => new Nssm('')).to.throw();
     });
   });
 
