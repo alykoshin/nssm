@@ -6,50 +6,47 @@ const Chai = require('chai');
 const Mockery = require('mockery');
 const Commands = require('../lib/commands.json');
 const Log = console;
-
 const expect = Chai.expect;
 
+const nssmExe = './';
 const protectedMethods = ['_exec'];
-
 
 // We have an issue:
 // any exception (including expect/etc) inside async functions silently stops the test execution
 
-describe('# nssm', () => {
+describe('# service', () => {
   describe('# initialization', () => {
-    let nssmModuleExports;
-    let nssm;
+    let Nssm;
+    let service;
 
     beforeEach('beforeEach', () => {
-      nssmModuleExports = require('../');
+      Nssm = require('../');
     });
 
     it('# require() returns constructing function', () => {
-      expect(nssmModuleExports).to.be.a('function');
+      expect(Nssm).to.be.a('function');
     });
 
     it('# creates an object', () => {
-      nssm = nssmModuleExports('name', {});
-      expect(nssm).to.be.an('object');
+      service = new Nssm('name', { nssmExe: nssmExe });
+      expect(service).to.be.an('object');
     });
 
     it('# an object has all the expected methods', () => {
       let allMethods = Commands.concat(protectedMethods);
 
-      expect(nssm).to.have.all.keys(allMethods);
+      expect(service).to.have.all.keys(allMethods);
     });
 
     it('# throws if name not provided', () => {
-      expect(() => {
-        nssmModuleExports('', {});
-      }).to.throw();
+      expect(() => new Nssm('', { nssmExe: nssmExe })).to.throw();
     });
   });
 
   describe('# methods with mock', () => {
     let serviceName = 'serviceName';
-    let nssmModuleExports;
-    let nssm;
+    let Nssm;
+    let service;
     let childProcess;
 
     before('before', () => {
@@ -66,8 +63,10 @@ describe('# nssm', () => {
       // replace the module `request` with a stub object
       Mockery.registerMock('childProcess', childProcess);
 
-      nssmModuleExports = require('../');
-      nssm = nssmModuleExports(serviceName, {});
+      Nssm = require('../');
+      service = new Nssm(serviceName, { nssmExe: nssmExe });
+
+      Log.log(service);
     });
 
     after(() => {
@@ -75,36 +74,35 @@ describe('# nssm', () => {
     });
 
     it('# creates a mocked object', () => {
-      expect(nssm).to.be.an('object');
+      expect(service).to.be.an('object');
     });
 
-
-    describe('# nssm.get()', () => {
+    describe('# service.get()', () => {
       function setMockFn(defaultNssmExe, commandName, commandParams, output) {
         childProcess.execFile = (name, args, options, execFileCb) => {
           expect(name).to.equal(defaultNssmExe);
 
-          let nssmArgs = commandParams.slice();
+          let serviceArgs = commandParams.slice();
 
-          nssmArgs.unshift(serviceName);
-          nssmArgs.unshift(commandName);
+          serviceArgs.unshift(serviceName);
+          serviceArgs.unshift(commandName);
 
-          expect(args).to.eql(nssmArgs);
+          expect(args).to.eql(serviceArgs);
           execFileCb(output.error, output.stdout, output.stderr);
         };
       }
 
       it('# callback on success', (done) => {
-        let defaultNssmExe = 'nssm.exe';
+        let defaultNssmExe = 'service.exe';
         let commandName = 'get';
         let commandParams = ['Start'];
         let error = null;
         let stdout = 'test output';
         let stderr = '';
 
-        setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
+        setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
-        let nssmCallback = (err, res) => {
+        let serviceCallback = (err, res) => {
           expect(err).to.eql(error);
           expect(res).to.equal(stdout);
           done();
@@ -112,12 +110,12 @@ describe('# nssm', () => {
 
         let fnParam = commandParams.slice();
 
-        fnParam.push(nssmCallback);
-        nssm[commandName].apply(this, fnParam);
+        fnParam.push(serviceCallback);
+        service[commandName].apply(this, fnParam);
       });
 
       it('# callback on non-empty error', (done) => {
-        let defaultNssmExe = 'nssm.exe';
+        let defaultNssmExe = 'service.exe';
         let commandName = 'get';
         let commandParams = ['Start'];
         let error = { code: 'ERROR_CODE' };
@@ -126,20 +124,20 @@ describe('# nssm', () => {
 
         setMockFn(defaultNssmExe, commandName, commandParams, { error: error, stdout: stdout, stderr: stderr });
 
-        let nssmCallback = (err, res) => {
+        let serviceCallback = (err, res) => {
           expect(err).to.eql(error);
           expect(res).to.equal(stderr);
           done();
         };
 
         let fnParam = commandParams.slice();
-        fnParam.push(nssmCallback);
+        fnParam.push(serviceCallback);
 
-        nssm[commandName].apply(this, fnParam);
+        service[commandName].apply(this, fnParam);
       });
 
-      it('# nssm.get() returns resolved Promise (callback not set)', () => {
-        let defaultNssmExe = 'nssm.exe';
+      it('# service.get() returns resolved Promise (callback not set)', () => {
+        let defaultNssmExe = 'service.exe';
         let commandName = 'get';
         let commandParams = ['Start'];
         let error = null;
@@ -149,7 +147,7 @@ describe('# nssm', () => {
         setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
         let fnParam = commandParams.slice();
-        let promise = nssm[commandName].apply(this, fnParam);
+        let promise = service[commandName].apply(this, fnParam);
 
         expect(promise).to.be.a('Promise');
 
@@ -158,8 +156,8 @@ describe('# nssm', () => {
         });
       });
 
-      it('# nssm.get() returns resolved Promise and calls callback on success', (done) => {
-        let defaultNssmExe = 'nssm.exe';
+      it('# service.get() returns resolved Promise and calls callback on success', (done) => {
+        let defaultNssmExe = 'service.exe';
         let commandName = 'get';
         let commandParams = ['Start'];
         let error = null;
@@ -168,32 +166,32 @@ describe('# nssm', () => {
 
         setMockFn(defaultNssmExe, commandName, commandParams, { error, stdout, stderr });
 
-        let nssmCallback = (err, res) => {
+        let serviceCallback = (err, res) => {
           expect(err).to.eql(error);
           expect(res).to.equal(stdout);
           done();
         };
 
         let fnParam = commandParams.slice();
-        fnParam.push(nssmCallback);
+        fnParam.push(serviceCallback);
 
-        let promise = nssm[commandName].apply(this, fnParam);
+        let promise = service[commandName].apply(this, fnParam);
 
         expect(promise).to.be.a('Promise');
       });
     });
 
-    describe('# nssm.set()', () => {
+    describe('# service.set()', () => {
       function setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, output) {
         childProcess.execFile = (name, args, options, execFileCb) => {
           expect(name).to.equal(defaultNssmExe);
 
-          let nssmArgs = commandParams.slice();
+          let serviceArgs = commandParams.slice();
 
-          nssmArgs.unshift(serviceName);
-          nssmArgs.unshift(commandName);
+          serviceArgs.unshift(serviceName);
+          serviceArgs.unshift(commandName);
 
-          Log.log('args:', args, ', nssmArgs:', nssmArgs, ', expectedArgs:', expectedArgs);
+          Log.log('args:', args, ', serviceArgs:', serviceArgs, ', expectedArgs:', expectedArgs);
 
           expect(args).to.eql(expectedArgs);
           execFileCb(output.error, output.stdout, output.stderr);
@@ -201,7 +199,7 @@ describe('# nssm', () => {
       }
 
       it('# returns resolved Promise and calls callback on success', (done) => {
-        let defaultNssmExe = 'nssm.exe';
+        let defaultNssmExe = 'service.exe';
         let commandName = 'set';
         let commandParams = ['Start', 'Auto'];
         let error = null;
@@ -211,7 +209,7 @@ describe('# nssm', () => {
 
         setMockFn(defaultNssmExe, commandName, commandParams, expectedArgs, { error, stdout, stderr });
 
-        let nssmCallback = (err, res) => {
+        let serviceCallback = (err, res) => {
           expect(err).to.eql(error);
           expect(res).to.equal(stdout);
           done();
@@ -219,9 +217,9 @@ describe('# nssm', () => {
 
         let fnParam = commandParams.slice();
 
-        fnParam.push(nssmCallback);
+        fnParam.push(serviceCallback);
 
-        let promise = nssm[commandName].apply(this, fnParam);
+        let promise = service[commandName].apply(this, fnParam);
 
         expect(promise).to.be.a('Promise');
       });
