@@ -1,14 +1,13 @@
 language: node_js
 node_js:
-  - "0.12"
   - "4.0"
   - "4.2"
+  - "4"
   - "5.0"
   - "5.1"
-  - "stable"
-  - "iojs"
-before_install:
+  - "5.5"
+  - "5"
+  - "node"
 script: "npm run-script test-travis"
 # Send coverage data to Coveralls
-before_script:
 after_script: "npm run-script coverall"
