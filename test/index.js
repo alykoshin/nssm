@@ -22,8 +22,8 @@ describe('# service', () => {
     });
 
     it('# creates an object', () => {
-      service = new Nssm('name');
-      expect(service).to.be.an('object');
+      expect(new Nssm('name')).to.be.an('object');
+      expect(Nssm('name')).to.be.an('object');
     });
 
     it('# an object has all the expected methods', () => {
@@ -32,8 +32,8 @@ describe('# service', () => {
     });
 
     it('# throws if name not provided', () => {
-      expect(() => new Nssm('')).to.throw();
-      expect(() => new Nssm()).to.throw();
+      expect(new Nssm('')).to.throw();
+      expect(new Nssm()).to.throw();
     });
   });
 
