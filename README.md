@@ -180,7 +180,7 @@ You may find this example in `examples/set.js`.
 
 ## Options object
 
-`options.nssmExe` - String - pathname of `nssm.exe`, default: `nssm.exe`
+`options.nssmExe` - String - pathname of `nssm.exe`, default: `nssm` (assuming installed globally)
 
 
 ## Available commands: 
