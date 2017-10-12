@@ -48,15 +48,15 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.2",
     "chai-things": "^0.2.0",
-    "coveralls": "^2.11.15",
-    "eslint": "^3.11.1",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.8.0",
     "istanbul": "^0.4.5",
-    "jshint": "^2.9.4",
-    "jsinspect": "^0.8.0",
-    "mocha": "^3.2.0",
-    "mockery": "^2.0.0",
-    "sinon": "^1.17.6"
+    "jshint": "^2.9.5",
+    "jsinspect": "^0.12.7",
+    "mocha": "^4.0.1",
+    "mockery": "^2.1.0",
+    "sinon": "^4.0.1"
   }
 }
