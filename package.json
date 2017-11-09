@@ -4,7 +4,7 @@
   "description": "Wrapper for nssm.exe to manage windows services",
   "main": "./index.js",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4"
   },
   "scripts": {
     "nsp": "nsp check",
