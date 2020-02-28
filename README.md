@@ -59,7 +59,7 @@ var Nssm = require('nssm');
 //var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe', encoding: 'utf8' }; // default
 var nssm = Nssm(svcName, options);
 
 var propertyName = 'Start';
@@ -113,7 +113,7 @@ var Nssm = require('nssm');
 //var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe', encoding: 'utf8' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.restart(function(error, result) {
@@ -136,7 +136,7 @@ var Nssm = require('nssm');
 //var Nssm = require('../');
 
 var svcName = 'AeLookupSvc';
-var options = { nssmExe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe', encoding: 'utf8' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.get('Start', function(error, result) {
@@ -158,7 +158,7 @@ var Nssm = require('nssm');
 //var Nssm = require('../');
 
 var svcName = 'test';
-var options = { nssmExe: 'nssm.exe' }; // default
+var options = { nssmExe: 'nssm.exe', encoding: 'utf8' }; // default
 var nssm = Nssm(svcName, options);
 
 nssm.set('Start', 'manual', function(error, result) {
